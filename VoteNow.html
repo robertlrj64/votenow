@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VoteNow</title>
+<style>
+:root{--bg:#fff;--card:#f6f7f9;--ink:#14213d;--mute:#6b7280;--line:#d7dbe2;--accent:#1d4ed8;--accent-ink:#fff;--err:#c62828;--ok:#2e7d32;--dem:#1e6fd9;--rep:#d32f2f;--lib:#ef7d00;--grn:#2e9e4f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+#app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+header{display:flex;align-items:center;gap:8px;padding:12px 16px;min-height:56px}
+.back{background:none;border:0;color:var(--ink);font-size:28px;line-height:1;width:44px;height:44px;margin-left:-10px;cursor:pointer}
+.back.hide{visibility:hidden}
+.prog{flex:1}
+.prog small{color:var(--mute);font-size:12px}
+.bar{height:5px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+main{flex:1;padding:8px 20px 24px;display:flex;flex-direction:column}
+h1{font-size:26px;margin:8px 0 6px}
+p.lead{color:var(--mute);margin:0 0 18px}
+.center{align-items:center;text-align:center}
+.ph{border:2px dashed var(--mute);border-radius:50%;position:relative;color:var(--mute);display:flex;align-items:center;justify-content:center;flex:none}
+.ph::before,.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(var(--mute),var(--mute)) center/2px 100% no-repeat;transform:rotate(45deg)}
+.ph::after{transform:rotate(-45deg)}
+.ph.logo{width:120px;height:120px;margin:12px auto 6px}.ph.seal{width:44px;height:44px;margin:0 auto 22px}
+label{display:block;font-size:13px;color:var(--mute);margin:14px 0 4px}
+input[type=text],input[type=tel],input[type=date]{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:16px}
+input:focus{outline:2px solid var(--accent);border-color:transparent}
+.btn{width:100%;padding:15px;border-radius:14px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:600;cursor:pointer;margin-top:12px}
+.btn.alt{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.4}
+.spacer{flex:1;min-height:16px}
+.foot{text-align:center;color:var(--mute);font-size:12px;padding:14px}
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;width:100%;text-align:left;color:var(--ink);font-size:17px;cursor:pointer}
+.row.sel{border-color:var(--accent)}
+.box{width:26px;height:26px;border:2px solid var(--mute);border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:17px;color:transparent}
+.row.sel .box{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.row .meta{flex:1;display:flex;flex-direction:column}
+.row .meta small{font-weight:600;font-size:13px}
+.row .sub{color:var(--mute);font-size:13px}
+.info{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--mute);background:none;color:var(--mute);font-weight:700;cursor:pointer;flex:none}
+.dem{color:var(--dem)}.rep{color:var(--rep)}.lib{color:var(--lib)}.grn{color:var(--grn)}.ind{color:var(--mute)}
+.rcard{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--ink);cursor:pointer}
+.rcard b{font-size:20px;display:block}.rcard span{font-size:14px;color:var(--mute)}
+.rcard.miss{border-color:var(--err)}.rcard.miss span{color:var(--err);font-weight:600}
+.scan{position:relative;width:100%;aspect-ratio:1.586;border:2px solid var(--line);border-radius:12px;background:var(--card);margin:10px 0 22px;overflow:hidden}
+.scan .c{position:absolute;width:26px;height:26px;border:3px solid var(--accent)}
+.c.tl{top:10px;left:10px;border-right:0;border-bottom:0}.c.tr{top:10px;right:10px;border-left:0;border-bottom:0}.c.bl{bottom:10px;left:10px;border-right:0;border-top:0}.c.br{bottom:10px;right:10px;border-left:0;border-top:0}
+.scan .ph{width:56px;height:56px;position:absolute;left:36px;top:34px}
+.scan .ln{position:absolute;right:36px;height:7px;border-radius:4px;background:var(--line)}
+.scan.go::after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--accent);animation:sw 1s ease-in-out infinite alternate}
+@keyframes sw{from{top:8%}to{top:92%}}
+.cam{width:72px;height:72px;border-radius:50%;border:3px solid var(--accent);background:var(--card);font-size:28px;margin:0 auto;cursor:pointer;display:block}
+.demo{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mute);font-size:12px;margin-top:18px}
+.check{width:96px;height:96px;border-radius:50%;background:var(--ok);color:#fff;font-size:56px;display:flex;align-items:center;justify-content:center;margin:24px auto 12px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:20;padding-bottom:env(safe-area-inset-bottom,0px)}
+.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:430px;border-radius:20px 20px 0 0;padding:22px 20px 26px}
+.sheet h2{margin:0 0 8px}.sheet h2.e{color:var(--err)}
+.sheet p{color:var(--mute);margin:0 0 6px}
+.sum{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:6px 16px;margin-bottom:6px}
+.sum div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.sum div:last-child{border:0}.sum span{color:var(--mute)}
+.list.scroll{max-height:min(52vh,360px);overflow-y:auto;padding-right:6px;scrollbar-width:thin;scrollbar-color:var(--mute) var(--line)}
+.list.scroll::-webkit-scrollbar{width:8px}.list.scroll::-webkit-scrollbar-track{background:var(--line);border-radius:4px}.list.scroll::-webkit-scrollbar-thumb{background:var(--mute);border-radius:4px}
+.list .row{flex:none}
+.dobbtn{width:100%;text-align:left;padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:16px;cursor:pointer}
+.wheels{position:relative;display:flex;height:200px;margin:8px 0 12px;gap:4px}
+.wheel{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;padding:80px 0;scrollbar-width:none;text-align:center}
+.wheel::-webkit-scrollbar{display:none}
+#wm{flex:2}
+.wheel div{height:40px;line-height:40px;scroll-snap-align:center;font-size:19px}
+.band{position:absolute;left:0;right:0;top:80px;height:40px;background:rgba(0,0,0,.07);border-radius:10px;pointer-events:none}
+#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.scan.live #vid{display:block}.scan.live .ph,.scan.live .ln{display:none}.scan .c{z-index:2}
+.camnote{text-align:center;color:var(--mute);font-size:13px;margin:12px 0 0}
+.warn{color:var(--err);font-size:14px;margin:0 0 12px}
+.slide{position:relative;height:60px;border-radius:30px;background:var(--line);display:flex;align-items:center;justify-content:center;user-select:none;margin-top:12px}
+.stxt{color:var(--mute);font-weight:600;padding-left:40px}
+.knob{position:absolute;left:4px;top:4px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab;font-weight:700;letter-spacing:-2px}
+</style>
+</head>
+<body>
+<div id="app">
+<header><button class="back hide" id="back" aria-label="Back">‹</button><div class="prog"><small id="step"></small><div class="bar"><i id="fill"></i></div></div></header>
+<main id="view"></main>
+</div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<script>
+// Sample data. Edit freely. Replace with real ballot data later.
+const RACES=[
+{id:'pres',title:'President',c:[
+{n:'Kamala D. Harris / Tim Walz',p:'Democrat',k:'dem'},
+{n:'Donald J. Trump / JD Vance',p:'Republican',k:'rep'},
+{n:'Chase Oliver / Mike ter Maat',p:'Libertarian',k:'lib'},
+{n:'Jill Stein / Rudolph Ware',p:'Green',k:'grn'}]},
+{id:'sen',title:'Senator',c:[
+{n:'Sample Candidate A',p:'Democrat',k:'dem'},{n:'Sample Candidate B',p:'Republican',k:'rep'},{n:'Sample Candidate C',p:'Independent',k:'ind'}]},
+{id:'ag',title:'Attorney General',c:[
+{n:'Sample Candidate D',p:'Democrat',k:'dem'},{n:'Sample Candidate E',p:'Republican',k:'rep'},{n:'Sample Candidate F',p:'Libertarian',k:'lib'},{n:'Sample Candidate J',p:'Green',k:'grn'},{n:'Sample Candidate K',p:'Independent',k:'ind'},{n:'Sample Candidate L',p:'Independent',k:'ind'},{n:'Sample Candidate M',p:'Democrat',k:'dem'},{n:'Sample Candidate N',p:'Republican',k:'rep'}]},
+{id:'rep',title:'Congress Representative',c:[
+{n:'Sample Candidate G',p:'Democrat',k:'dem'},{n:'Sample Candidate H',p:'Republican',k:'rep'},{n:'Sample Candidate I',p:'Green',k:'grn'}]}
+];
+const S={info:{},votes:{},race:null,screen:'checkin',prev:[]};
+const $=s=>document.querySelector(s),V=$('#view');
+const STEPS={checkin:1,confirm:2,front:2,back:2,races:3,cands:4,review:5,fix:6,cast:7,done:8};
+const BACK={confirm:'checkin',front:'confirm',back:'front',cands:'races',review:'races',fix:'review',cast:'review'};
+const logo=()=>'<div class="ph logo" title="Logo placeholder"></div>';
+function go(s,r){stopCam();S.screen=s;if(r)S.race=r;draw();scrollTo(0,0)}
+function modal(html){$('#sheet').innerHTML=html;$('#modal').classList.add('on')}
+function closeM(){$('#modal').classList.remove('on')}
+function err(msg,title,then){modal(`<h2 class="e">${title||'Error'}</h2><p>${msg}</p><button class="btn" id="ok">OK</button>`);$('#ok').onclick=()=>{closeM();then&&then()}}
+$('#back').onclick=()=>go(BACK[S.screen]);
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeM()};
+const missing=()=>RACES.filter(r=>!S.votes[r.id]);
+const cand=id=>{const r=RACES.find(x=>x.id===id);return r.c.find(c=>c.n===S.votes[id])};
+
+function draw(){
+const s=S.screen,st=STEPS[s];
+$('#step').textContent=`Step ${st} of 8`;$('#fill').style.width=(st/8*100)+'%';
+$('#back').classList.toggle('hide',!BACK[s]);
+V.className=(s==='done'?'center':'');
+({checkin,confirm,front:()=>scan('front'),back:()=>scan('back'),races,cands,review,fix:cands,cast,done})[s]===undefined||(({checkin,confirm,front:()=>scan('front'),back:()=>scan('back'),races,cands,review,fix:cands,cast,done})[s])();
+}
+
+const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function fmtDob(d){const[y,m,dd]=d.split('-');return MON[m-1]+' '+(+dd)+', '+y}
+function openDob(){
+const cur=S.info.dob?S.info.dob.split('-').map(Number):[2000,1,1];
+const yrs=[];for(let y=new Date().getFullYear()-18;y>=1900;y--)yrs.push(y);
+const days=Array.from({length:31},(_,i)=>i+1);
+const col=(id,items)=>`<div class="wheel" id="${id}">${items.map(t=>`<div>${t}</div>`).join('')}</div>`;
+modal(`<h2>Date of birth</h2><div class="wheels"><i class="band"></i>${col('wm',MON)}${col('wd',days)}${col('wy',yrs)}</div><button class="btn" id="ok">Done</button>`);
+const set=(id,i)=>{$(id).scrollTop=i*40};
+set('#wm',cur[1]-1);set('#wd',cur[2]-1);set('#wy',Math.max(0,yrs.indexOf(cur[0])));
+$('#ok').onclick=()=>{const g=id=>Math.round($(id).scrollTop/40);
+const y=yrs[Math.min(g('#wy'),yrs.length-1)],m=Math.min(g('#wm'),11)+1;let d=Math.min(g('#wd'),30)+1;d=Math.min(d,new Date(y,m,0).getDate());
+S.info.dob=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;$('#dob').textContent=fmtDob(S.info.dob);closeM()};
+}
+function checkin(){
+V.innerHTML=`${logo()}<div class="ph seal" title="Seal placeholder"></div>
+<label for="ln">Last name</label><input id="ln" type="text" autocomplete="family-name" value="${S.info.ln||''}">
+<label>Date of birth</label><button type="button" class="dobbtn" id="dob">${S.info.dob?fmtDob(S.info.dob):'Select date'}</button>
+<label for="ssn">Last 4 of SSN</label><input id="ssn" type="tel" inputmode="numeric" maxlength="4" placeholder="••••" value="${S.info.ssn||''}">
+<button class="btn" id="next">Next ›</button><div class="spacer"></div><div class="foot">© 2026 US Gov’t · Prototype</div>`;
+$('#dob').onclick=openDob;
+$('#next').onclick=()=>{
+const ln=$('#ln').value.trim(),dob=S.info.dob,ssn=$('#ssn').value.trim();
+if(!ln||!dob||!/^\d{4}$/.test(ssn))return err('Please enter your last name, date of birth, and the last 4 digits of your SSN.','Missing information');
+S.info={ln,dob,ssn};go('confirm')}
+}
+function confirm(){
+V.innerHTML=`<h1>Is your info correct?</h1><p class="lead">Please make sure everything below matches your records.</p>
+<div class="sum"><div><span>Last name</span><b>${S.info.ln.replace(/</g,'&lt;')}</b></div><div><span>Date of birth</span><b>${fmtDob(S.info.dob)}</b></div><div><span>SSN</span><b>•••-••-${S.info.ssn}</b></div></div>
+<div class="spacer"></div><button class="btn" id="y">Yes, continue</button><button class="btn alt" id="n">No, edit</button>
+<div class="demo"><input type="checkbox" id="fl" ${fail?'checked':''}><label for="fl" style="margin:0">Demo: simulate failed ID verification</label></div>`;
+$('#fl').onchange=e=>fail=e.target.checked;
+$('#y').onclick=()=>{if(fail){fail=false;return err('Failed to verify identity. Please make sure your info is correct.','Error',()=>go('checkin'))}go('front')};
+$('#n').onclick=()=>err('Failed to verify identity. Please make sure your info is correct.','Error',()=>go('checkin'));
+}
+let fail=false;
+function scan(side){
+V.innerHTML=`<h1>Verify ID</h1><p class="lead">Scan the ${side} side of your state-issued ID.</p>
+<div class="scan" id="sc"><video id="vid" playsinline muted autoplay></video><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+<div class="ph" title="Photo placeholder"></div><i class="ln" style="top:44px;width:90px"></i><i class="ln" style="top:64px;width:70px"></i><i class="ln" style="top:84px;width:100px"></i></div>
+<button class="cam" id="cam" aria-label="Capture ID">📷</button><p class="camnote" id="cn"></p><button class="btn alt" id="sim" style="display:none">Continue with simulated scan</button>
+`;
+const sc=$('#sc'),vid=$('#vid');
+const next=()=>{stopCam();go(side==='front'?'back':'races')};
+const noCam=m=>{$('#cn').textContent=m;$('#sim').style.display='block'};
+$('#sim').onclick=next;
+if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(s=>{stream=s;vid.srcObject=s;sc.classList.add('live')}).catch(()=>noCam('Camera unavailable or permission denied. Allow camera access, or continue with a simulated scan.'));
+}else noCam('Camera not supported here. Continue with a simulated scan.');
+$('#cam').onclick=()=>{
+if(!stream)return noCam('No camera available. Allow access, or continue with a simulated scan.');
+vid.pause();sc.classList.add('go');$('#cam').disabled=true;
+setTimeout(next,900)};
+}
+let stream=null;
+function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
+function races(){
+V.innerHTML=`<h1>Select Race</h1><p class="lead">Choose a race to select your vote. You can skip a race and come back to it later.</p>
+<div class="list">${RACES.map(r=>`<button class="row ${S.votes[r.id]?'sel':''}" data-id="${r.id}"><span class="box">✓</span><span class="meta">${r.title}${S.votes[r.id]?`<span class="sub">${S.votes[r.id]}</span>`:''}</span></button>`).join('')}</div>
+<div class="spacer"></div><button class="btn" id="c">Review ballot</button>`;
+V.querySelectorAll('.row').forEach(b=>b.onclick=()=>go('cands',b.dataset.id));
+$('#c').onclick=()=>go('review');
+}
+function cands(){
+const r=RACES.find(x=>x.id===S.race),fix=S.screen==='fix',cur=S.votes[r.id];
+if(fix)BACK.fix='review';
+$('#back').classList.remove('hide');
+V.innerHTML=`<h1>${r.title}</h1><p class="lead">Select a candidate</p>
+<div class="list scroll">${r.c.map((c,i)=>`<div class="row ${cur===c.n?'sel':''}" data-i="${i}" role="button" tabindex="0"><span class="box">✓</span><span class="meta">${c.n}<small class="${c.k}">${c.p}</small></span><button class="info" data-i="${i}" aria-label="Candidate info">i</button></div>`).join('')}</div>
+<div class="spacer"></div><button class="btn" id="c">Continue</button>`;
+V.querySelectorAll('.row').forEach(b=>b.onclick=e=>{if(e.target.closest('.info'))return;const n=r.c[b.dataset.i].n;if(S.votes[r.id]===n)delete S.votes[r.id];else S.votes[r.id]=n;V.querySelectorAll('.row').forEach(x=>x.classList.toggle('sel',r.c[x.dataset.i].n===S.votes[r.id]))});
+V.querySelectorAll('.info').forEach(b=>b.onclick=()=>{const c=r.c[b.dataset.i];modal(`<h2>${c.n}</h2><p class="${c.k}"><b>${c.p}</b></p><div class="ph seal" style="margin:12px 0" title="Photo placeholder"></div><p>Placeholder biography and platform summary.</p><button class="btn" id="ok">Close</button>`);$('#ok').onclick=closeM});
+$('#c').onclick=()=>go(fix?'review':'races');
+}
+function review(){
+V.innerHTML=`<h1>Review Ballot</h1><p class="lead">Tap any race to make a change.</p>
+<div class="list">${RACES.map(r=>{const c=cand(r.id);return `<button class="rcard ${c?'':'miss'}" data-id="${r.id}"><b>${r.title}</b><span>${c?c.n:'✕ Not selected'}</span></button>`}).join('')}</div>
+<div class="spacer"></div><button class="btn" id="cv">Cast Vote</button>`;
+V.querySelectorAll('.rcard').forEach(b=>b.onclick=()=>go('fix',b.dataset.id));
+$('#cv').onclick=()=>go('cast');
+}
+function slider(onDone){
+const sl=$('#sl'),kb=$('#kb');let x=0,drag=false,sx=0;
+const max=()=>sl.clientWidth-kb.offsetWidth-8;
+kb.tabIndex=0;kb.onkeydown=e=>{if(e.key==='Enter')onDone()};
+kb.onpointerdown=e=>{drag=true;kb.style.transition='';sx=e.clientX-x;kb.setPointerCapture(e.pointerId)};
+kb.onpointermove=e=>{if(!drag)return;x=Math.max(0,Math.min(max(),e.clientX-sx));kb.style.transform=`translateX(${x}px)`};
+const end=()=>{if(!drag)return;drag=false;kb.style.transition='transform .2s';if(x>=max()*.92){kb.style.transform=`translateX(${max()}px)`;setTimeout(onDone,220)}else{x=0;kb.style.transform=''}};
+kb.onpointerup=end;kb.onpointercancel=end;
+}
+function cast(){
+const m=missing();
+V.innerHTML=`<h1>Cast Vote</h1><p class="lead">This can’t change your vote. Are you sure you do not want to make any more changes to your vote?</p>${m.length?`<p class="warn">No selection for: ${m.map(r=>r.title).join(', ')}. These races will be left blank.</p>`:''}
+<div class="spacer"></div><div class="slide" id="sl"><span class="stxt">Slide to cast vote</span><div class="knob" id="kb">›››</div></div><button class="btn alt" id="n">No, make more changes</button>`;
+slider(()=>go('done'));$('#n').onclick=()=>go('review');
+}
+function done(){
+V.innerHTML=`<div class="check">✓</div><h1>Congratulations, your vote was cast!</h1><p class="lead">Would you like a confirmation email?</p>
+<button class="btn" id="y">Yes</button><button class="btn alt" id="n">No</button><div class="spacer"></div><p class="foot">Thank you for your vote.</p>`;
+const fin=m=>{V.innerHTML=`<div class="check">✓</div><h1>All done</h1><p class="lead">${m}</p><button class="btn alt" id="r">Restart demo</button>`;$('#r').onclick=()=>{S.info={};S.votes={};go('checkin')}};
+$('#y').onclick=()=>fin('A confirmation email would be sent here (placeholder).');$('#n').onclick=()=>{modal(`<h2>No email confirmation?</h2><p>You won’t receive an email record that your vote was cast. Are you sure?</p><button class="btn" id="ok">Yes, don’t send an email</button><button class="btn alt" id="bk">Go back</button>`);$('#ok').onclick=()=>{closeM();fin('No confirmation email will be sent.')};$('#bk').onclick=closeM};
+}
+draw();
+</script>
+</body>
+</html>
